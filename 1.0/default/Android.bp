@@ -11,7 +11,7 @@ cc_library_shared {
         "libhidlbase",
         "libhidltransport",
         "libutils",
-        "vendor.nxp.hardware.nfc@1.0",
+        "vendor.nxp.hardware.nfc@1.0_vendor",
         "android.hidl.base@1.0",
     ],
 }

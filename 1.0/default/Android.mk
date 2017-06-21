@@ -21,6 +21,6 @@ LOCAL_SHARED_LIBRARIES += \
 	libhidlbase \
 	libhidltransport \
 	android.hardware.nfc@1.0 \
-        vendor.nxp.hardware.nfc@1.0 \
+	vendor.nxp.hardware.nfc@1.0_vendor \
 
 include $(BUILD_EXECUTABLE)
