@@ -3,3 +3,8 @@ subdirs = [
     "1.0",
     "1.0/default",
 ]
+
+hidl_package_root {
+    name: "vendor.nxp.hardware",
+    path: "vendor/nxp/interfaces/opensource",
+}
