@@ -49,7 +49,7 @@
 #include <log/log.h>
 #include "Nfc.h"
 extern "C" {
-#include "halimpl/inc/phNxpNciHal_Adaptation.h"
+#include "phNxpNciHal_Adaptation.h"
 }
 
 #define UNUSED(x) (void)(x)
@@ -65,6 +65,13 @@ namespace V1_1 {
 namespace implementation {
 
 sp<INfcClientCallback> Nfc::mCallback = nullptr;
+
+Return<V1_0::NfcStatus> Nfc::open_1_1(const sp<V1_1::INfcClientCallback>& clientCallback) {
+    if (clientCallback == nullptr) {
+        return V1_0::NfcStatus::FAILED;
+    }
+    return open(clientCallback);
+}
 
 // Methods from ::android::hardware::nfc::V1_0::INfc follow.
 Return<V1_0::NfcStatus> Nfc::open(const sp<INfcClientCallback>& clientCallback) {
@@ -160,6 +167,13 @@ Return<V1_0::NfcStatus> Nfc::closeForPowerOffCase() {
         return V1_0::NfcStatus::OK;
     }
 }
+
+Return<void> Nfc::getConfig(getConfig_cb hidl_cb) {
+  NfcConfig nfcVendorConfig;
+  hidl_cb(nfcVendorConfig);
+  return Void();
+}
+
 
 }  // namespace implementation
 }  // namespace V1_1

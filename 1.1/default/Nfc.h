@@ -83,6 +83,8 @@ public:
     // Methods from ::android::hardware::nfc::V1_1::INfc follow.
     Return<void> factoryReset();
     Return<V1_0::NfcStatus> closeForPowerOffCase();
+    Return<V1_0::NfcStatus> open_1_1(const sp<V1_1::INfcClientCallback>& clientCallback);
+    Return<void> getConfig(getConfig_cb config);
 
     // Methods from ::android::hidl::base::V1_0::IBase follow.
 
