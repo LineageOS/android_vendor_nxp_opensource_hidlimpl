@@ -1,3 +1,20 @@
+/******************************************************************************
+ *
+ *  Copyright 2018 NXP
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ ******************************************************************************/
 /*
  * Copyright (c) 2018, The Linux Foundation. All rights reserved.
  *
@@ -31,6 +48,7 @@
 #define ANDROID_HARDWARE_NFC_V1_1_NFC_H
 
 #include <android/hardware/nfc/1.1/INfc.h>
+#include <android/hardware/nfc/1.1/types.h>
 #include <hidl/MQDescriptor.h>
 #include <hidl/Status.h>
 
@@ -40,6 +58,9 @@ namespace nfc {
 namespace V1_1 {
 namespace implementation {
 
+using ::android::hidl::base::V1_0::IBase;
+using ::android::hardware::nfc::V1_0::INfc;
+using ::android::hardware::nfc::V1_0::INfcClientCallback;
 using ::android::hardware::hidl_array;
 using ::android::hardware::hidl_memory;
 using ::android::hardware::hidl_string;
@@ -48,27 +69,52 @@ using ::android::hardware::Return;
 using ::android::hardware::Void;
 using ::android::sp;
 
-struct Nfc : public INfc {
+struct Nfc : public V1_1::INfc, public hidl_death_recipient {
+public:
     // Methods from ::android::hardware::nfc::V1_0::INfc follow.
-    Return<::android::hardware::nfc::V1_0::NfcStatus> open(const sp<::android::hardware::nfc::V1_0::INfcClientCallback>& clientCallback) override;
+    Return<V1_0::NfcStatus> open(const sp<INfcClientCallback>& clientCallback) override;
     Return<uint32_t> write(const hidl_vec<uint8_t>& data) override;
-    Return<::android::hardware::nfc::V1_0::NfcStatus> coreInitialized(const hidl_vec<uint8_t>& data) override;
-    Return<::android::hardware::nfc::V1_0::NfcStatus> prediscover() override;
-    Return<::android::hardware::nfc::V1_0::NfcStatus> close() override;
-    Return<::android::hardware::nfc::V1_0::NfcStatus> controlGranted() override;
-    Return<::android::hardware::nfc::V1_0::NfcStatus> powerCycle() override;
+    Return<V1_0::NfcStatus> coreInitialized(const hidl_vec<uint8_t>& data) override;
+    Return<V1_0::NfcStatus> prediscover() override;
+    Return<V1_0::NfcStatus> close() override;
+    Return<V1_0::NfcStatus> controlGranted() override;
+    Return<V1_0::NfcStatus> powerCycle() override;
 
     // Methods from ::android::hardware::nfc::V1_1::INfc follow.
-    Return<void> factoryReset() override;
-    Return<::android::hardware::nfc::V1_0::NfcStatus> closeForPowerOffCase() override;
-    Return<::android::hardware::nfc::V1_0::NfcStatus> open_1_1(const sp<::android::hardware::nfc::V1_1::INfcClientCallback>& clientCallback) override;
+    Return<void> factoryReset();
+    Return<V1_0::NfcStatus> closeForPowerOffCase();
 
     // Methods from ::android::hidl::base::V1_0::IBase follow.
 
-};
 
-// FIXME: most likely delete, this is only for passthrough implementations
-// extern "C" INfc* HIDL_FETCH_INfc(const char* name);
+    static void eventCallback(uint8_t event, uint8_t status) {
+        if (mCallback != nullptr) {
+            auto ret = mCallback->sendEvent((V1_0::NfcEvent)event,
+                                            (V1_0::NfcStatus)status);
+            if (!ret.isOk()) {
+                ALOGW("failed to send event!!!");
+            }
+        }
+    }
+
+    static void dataCallback(uint16_t data_len, uint8_t* p_data) {
+        hidl_vec<uint8_t> data;
+        data.setToExternal(p_data, data_len);
+        if (mCallback != nullptr) {
+            auto ret = mCallback->sendData(data);
+            if (!ret.isOk()) {
+                ALOGW("failed to send data!!!");
+            }
+        }
+    }
+
+    virtual void serviceDied(uint64_t /*cookie*/, const wp<IBase>& /*who*/) {
+        close();
+    }
+
+private:
+    static sp<INfcClientCallback> mCallback;
+};
 
 }  // namespace implementation
 }  // namespace V1_1
