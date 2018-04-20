@@ -154,13 +154,15 @@ Return<V1_0::NfcStatus> Nfc::powerCycle() {
 
 // Methods from ::android::hardware::nfc::V1_1::INfc follow.
 Return<void> Nfc::factoryReset() {
-    phNxpNciHal_do_factory_reset();
+    //TODO until HAL library not updated
+    //phNxpNciHal_do_factory_reset();
     return Void();
 }
 
 Return<V1_0::NfcStatus> Nfc::closeForPowerOffCase() {
     HALSTATUS status = HALSTATUS_FAILED;
-    status = phNxpNciHal_shutdown();
+    //TODO until HAL library not updated
+    //status = phNxpNciHal_shutdown();
     if(status != HALSTATUS_SUCCESS) {
         return V1_0::NfcStatus::FAILED;
     } else {

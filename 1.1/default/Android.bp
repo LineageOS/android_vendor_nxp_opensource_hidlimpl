@@ -7,9 +7,10 @@ cc_binary {
     srcs: [
         "service.cpp",
         "Nfc.cpp",
+        "NqNfc.cpp",
     ],
     shared_libs: [
-        "nfc_nci.nqx.default",
+        "nfc_nci.nqx.default.hw",
         "libhidlbase",
         "libhidltransport",
         "libutils",

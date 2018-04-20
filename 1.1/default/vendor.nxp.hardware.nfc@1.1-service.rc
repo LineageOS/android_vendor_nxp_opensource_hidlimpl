@@ -27,7 +27,7 @@
  * IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-service nqnfc_hal_service /vendor/bin/hw/vendor.nxp.hardware.nfc@1.1-service
+service nqnfc_1_1_hal_service /vendor/bin/hw/vendor.nxp.hardware.nfc@1.1-service
     class hal
     user nfc
     group nfc

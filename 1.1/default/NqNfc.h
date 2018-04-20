@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017, The Linux Foundation. All rights reserved.
+ * Copyright (c) 2017-2018, The Linux Foundation. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -33,9 +33,6 @@
 #include <vendor/nxp/hardware/nfc/1.0/INqNfc.h>
 #include <hidl/MQDescriptor.h>
 #include <hidl/Status.h>
-#include <hardware/nfc.h>
-#include "include/device.h"
-#include "include/utils.h"
 
 namespace vendor {
 namespace nxp {
@@ -56,18 +53,11 @@ using ::android::hardware::Void;
 using ::android::sp;
 
 struct NqNfc : public INqNfc {
-    NqNfc(pn547_dev_t* device);
     // Methods from ::vendor::nxp::hardware::nfc::V1_0::INqNfc follow.
     Return<void> ioctl(uint64_t ioctlType, const hidl_vec<uint8_t>& inputData, ioctl_cb _hidl_cb) override;
 
-    private:
-        const pn547_dev_t*       mDevice;
-
     // Methods from ::android::hidl::base::V1_0::IBase follow.
-
 };
-
-extern "C" INqNfc* HIDL_FETCH_INqNfc(const char* name);
 
 }  // namespace implementation
 }  // namespace V1_0
