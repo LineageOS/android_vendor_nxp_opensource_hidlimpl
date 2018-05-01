@@ -9,7 +9,7 @@ cc_binary {
         "Nfc.cpp",
     ],
     shared_libs: [
-        "nfc_nci.nqx.default",
+        "nfc_nci.nqx.default.hw",
         "libhidlbase",
         "libhidltransport",
         "libutils",
