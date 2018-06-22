@@ -15,6 +15,7 @@ cc_binary {
         "libhidltransport",
         "libutils",
         "liblog",
+        "libhwbinder",
         "android.hardware.nfc@1.1",
         "android.hardware.nfc@1.0",
         "vendor.nxp.hardware.nfc@1.0",
