@@ -42,7 +42,7 @@ using android::hardware::registerPassthroughServiceImplementation;
 using android::OK;
 
 int main() {
-    configureRpcThreadpool(10, true /*callerWillJoin*/);
+    configureRpcThreadpool(1, true /*callerWillJoin*/);
     android::status_t status;
     status = registerPassthroughServiceImplementation<INfc>();
     LOG_ALWAYS_FATAL_IF(status != OK, "Error while registering nfc AOSP service: %d", status);
