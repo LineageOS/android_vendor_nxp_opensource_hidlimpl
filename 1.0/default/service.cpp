@@ -31,7 +31,7 @@
 
 #include <android/hardware/nfc/1.0/INfc.h>
 #include <vendor/nxp/hardware/nfc/1.0/INqNfc.h>
-
+#include <hwbinder/ProcessState.h>
 #include <hidl/LegacySupport.h>
 
 using android::hardware::configureRpcThreadpool;
@@ -42,7 +42,8 @@ using android::hardware::registerPassthroughServiceImplementation;
 using android::OK;
 
 int main() {
-    configureRpcThreadpool(10, true /*callerWillJoin*/);
+    android::hardware::ProcessState::initWithMmapSize((size_t)(8192));
+    configureRpcThreadpool(1, true /*callerWillJoin*/);
     android::status_t status;
     status = registerPassthroughServiceImplementation<INfc>();
     LOG_ALWAYS_FATAL_IF(status != OK, "Error while registering nfc AOSP service: %d", status);

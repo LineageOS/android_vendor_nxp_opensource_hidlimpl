@@ -31,7 +31,7 @@
 
 #include <android/hardware/nfc/1.1/INfc.h>
 #include <vendor/nxp/hardware/nfc/1.0/INqNfc.h>
-
+#include <hwbinder/ProcessState.h>
 #include <hidl/LegacySupport.h>
 #include "Nfc.h"
 #include "NqNfc.h"
@@ -47,6 +47,7 @@ using android::sp;
 using android::status_t;
 
 int main() {
+    android::hardware::ProcessState::initWithMmapSize((size_t)(8192));
     configureRpcThreadpool(1, true /*callerWillJoin*/);
     status_t status;
     sp<INfc> nfc_service = new Nfc();
