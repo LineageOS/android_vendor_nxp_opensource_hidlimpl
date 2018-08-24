@@ -33,6 +33,7 @@
 #include <vendor/nxp/hardware/nfc/1.0/INqNfc.h>
 #include <hidl/MQDescriptor.h>
 #include <hidl/Status.h>
+#include "hal_nxpnfc.h"
 
 namespace vendor {
 namespace nxp {

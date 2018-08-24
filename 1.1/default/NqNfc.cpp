@@ -30,9 +30,7 @@
 #include <hardware/hardware.h>
 #include <log/log.h>
 #include "NqNfc.h"
-extern "C" {
 #include "phNxpNciHal_Adaptation.h"
-}
 
 namespace vendor {
 namespace nxp {
