@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017, The Linux Foundation. All rights reserved.
+ * Copyright (c) 2017-2018, The Linux Foundation. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -30,6 +30,7 @@
 #include <hardware/hardware.h>
 #include <log/log.h>
 #include "NqNfc.h"
+#include "phNxpNciHal_Adaptation.h"
 
 namespace vendor {
 namespace nxp {
@@ -37,9 +38,6 @@ namespace hardware {
 namespace nfc {
 namespace V1_0 {
 namespace implementation {
-
-NqNfc::NqNfc(pn547_dev_t* device) : mDevice(device) {
-}
 
 // Methods from ::vendor::nxp::hardware::nfc::V1_0::INqNfc follow.
 Return<void> NqNfc::ioctl(uint64_t ioctlType, const hidl_vec<uint8_t>& inputData, ioctl_cb _hidl_cb) {
@@ -54,7 +52,7 @@ Return<void> NqNfc::ioctl(uint64_t ioctlType, const hidl_vec<uint8_t>& inputData
      * underlying HAL implementation since its an inout argument
      */
     memcpy(&inpOutData, pInOutData, sizeof(nfc_nci_IoctlInOutData_t));
-    status = mDevice->ioctl(&mDevice->nci_device, ioctlType, &inpOutData);
+    status = phNxpNciHal_ioctl(ioctlType, &inpOutData);
 
     /*
      * copy data and additional fields indicating status of ioctl operation
@@ -66,38 +64,6 @@ Return<void> NqNfc::ioctl(uint64_t ioctlType, const hidl_vec<uint8_t>& inputData
     outputData.setToExternal((uint8_t*)&inpOutData.out, sizeof(nfc_nci_ExtnOutputData_t));
     _hidl_cb(outputData);
     return Void();
-}
-
-
-// Methods from ::android::hidl::base::V1_0::IBase follow.
-
-INqNfc* HIDL_FETCH_INqNfc(const char* /* name */) {
-    nfc_nci_device_t* nci_device;
-    const hw_module_t* hw_module = NULL;
-    pn547_dev_t* nfc_device = NULL;
-    int ret = 0;
-
-    nci_device = &nfc_device->nci_device;
-
-    ret = hw_get_module (NFC_NCI_HARDWARE_MODULE_ID, &hw_module);
-    if (ret == 0)
-    {
-        ret = nfc_nci_open (hw_module, &nci_device);
-        if (ret != 0) {
-            ALOGE ("nfc_nci_open failed: %d", ret);
-        }
-    }
-    else
-        ALOGE ("hw_get_module %s failed: %d", NFC_NCI_HARDWARE_MODULE_ID, ret);
-
-    if (ret == 0) {
-        ALOGD ("vendor NXP NFC HAL module loaded properly");
-        nfc_device = (pn547_dev_t*)nci_device;
-        return new NqNfc(nfc_device);
-    } else {
-        ALOGE("Passthrough failed to load legacy HAL.");
-        return nullptr;
-    }
 }
 
 }  // namespace implementation

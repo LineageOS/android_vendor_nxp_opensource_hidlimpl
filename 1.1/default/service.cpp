@@ -34,13 +34,14 @@
 
 #include <hidl/LegacySupport.h>
 #include "Nfc.h"
+#include "NqNfc.h"
 
 using android::hardware::configureRpcThreadpool;
 using android::hardware::joinRpcThreadpool;
 using android::hardware::nfc::V1_1::INfc;
 using vendor::nxp::hardware::nfc::V1_0::INqNfc;
 using android::hardware::nfc::V1_1::implementation::Nfc;
-using android::hardware::registerPassthroughServiceImplementation;
+using vendor::nxp::hardware::nfc::V1_0::implementation::NqNfc;
 using android::OK;
 using android::sp;
 using android::status_t;
@@ -48,9 +49,15 @@ using android::status_t;
 int main() {
     configureRpcThreadpool(1, true /*callerWillJoin*/);
     status_t status;
+
     sp<INfc> nfc_service = new Nfc();
     status = nfc_service->registerAsService();
     LOG_ALWAYS_FATAL_IF(status != OK, "Error while registering nfc AOSP service: %d", status);
+
+    sp<INqNfc> nq_nfc_service = new NqNfc();
+    status = nq_nfc_service->registerAsService();
+    LOG_ALWAYS_FATAL_IF(status != OK, "Error while registering nqnfc vendor service: %d", status);
+
     joinRpcThreadpool();
     return status;
 }
