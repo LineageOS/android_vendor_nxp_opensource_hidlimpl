@@ -38,9 +38,9 @@
 
 using android::hardware::configureRpcThreadpool;
 using android::hardware::joinRpcThreadpool;
-using android::hardware::nfc::V1_1::INfc;
+using android::hardware::nfc::V1_2::INfc;
 using vendor::nxp::hardware::nfc::V1_1::INqNfc;
-using android::hardware::nfc::V1_1::implementation::Nfc;
+using android::hardware::nfc::V1_2::implementation::Nfc;
 using vendor::nxp::hardware::nfc::V1_1::implementation::NqNfc;
 using android::OK;
 using android::sp;
