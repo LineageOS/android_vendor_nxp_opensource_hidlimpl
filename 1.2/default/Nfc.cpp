@@ -45,7 +45,7 @@
  * IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#define LOG_TAG "android.hardware.nfc@1.1-impl"
+#define LOG_TAG "android.hardware.nfc@1.2-impl"
 #include <log/log.h>
 #include "Nfc.h"
 #include "phNxpNciHal_Adaptation.h"
@@ -59,7 +59,7 @@ extern bool nfc_debug_enabled;
 namespace android {
 namespace hardware {
 namespace nfc {
-namespace V1_1 {
+namespace V1_2 {
 namespace implementation {
 
 sp<V1_1::INfcClientCallback> Nfc::mCallbackV1_1 = nullptr;
@@ -161,8 +161,14 @@ Return<V1_0::NfcStatus> Nfc::closeForPowerOffCase() {
 }
 
 Return<void> Nfc::getConfig(getConfig_cb hidl_cb) {
-  NfcConfig nfcVendorConfig;
+  android::hardware::nfc::V1_1::NfcConfig nfcVendorConfig;
   phNxpNciHal_getVendorConfig(nfcVendorConfig);
+  hidl_cb(nfcVendorConfig);
+  return Void();
+}
+Return<void> Nfc::getConfig_1_2(getConfig_1_2_cb hidl_cb) {
+  NfcConfig nfcVendorConfig;
+  phNxpNciHal_getVendorConfig_1_2(nfcVendorConfig);
   hidl_cb(nfcVendorConfig);
   return Void();
 }
