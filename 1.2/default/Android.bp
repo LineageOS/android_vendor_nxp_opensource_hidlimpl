@@ -24,4 +24,7 @@ cc_binary {
     header_libs: [
         "libhardware_headers",
     ],
+    sanitize: {
+        cfi: true,
+    },
 }
