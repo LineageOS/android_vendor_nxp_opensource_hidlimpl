@@ -26,5 +26,7 @@ cc_binary {
     ],
     sanitize: {
         cfi: true,
+        misc_undefined: ["signed-integer-overflow",
+                         "unsigned-integer-overflow"],
     },
 }
