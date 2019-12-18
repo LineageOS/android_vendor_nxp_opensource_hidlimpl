@@ -12,7 +12,6 @@ cc_binary {
     shared_libs: [
         "nfc_nci.nqx.default.hw",
         "libhidlbase",
-        "libhidltransport",
         "libutils",
         "liblog",
         "android.hardware.nfc@1.0",
@@ -24,4 +23,9 @@ cc_binary {
     header_libs: [
         "libhardware_headers",
     ],
+    sanitize: {
+        cfi: true,
+        misc_undefined: ["signed-integer-overflow",
+                         "unsigned-integer-overflow"],
+    },
 }
