@@ -6,6 +6,7 @@ cc_binary {
     vendor: true,
     srcs: [
         "service.cpp",
+        "Nfc.cpp",
         "NqNfc.cpp",
     ],
     shared_libs: [
