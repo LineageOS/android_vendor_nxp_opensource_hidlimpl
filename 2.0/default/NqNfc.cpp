@@ -37,7 +37,7 @@ namespace vendor {
 namespace nxp {
 namespace hardware {
 namespace nfc {
-namespace V1_2 {
+namespace V2_0 {
 namespace implementation {
 
 // Methods from ::vendor::nxp::hardware::nfc::V1_0::INqNfc follow.
@@ -91,7 +91,7 @@ Return<void> NqNfc::getNfcFirmwareVersion(getNfcFirmwareVersion_cb _hidl_cb) {
     return Void();
 }
 
-// Methods from ::vendor::nxp::hardware::nfc::V1_2::INqNfc follow.
+// Methods from ::vendor::nxp::hardware::nfc::V2_0::INqNfc follow.
 Return<void> NqNfc::getSystemProperty(const ::android::hardware::hidl_string& key,
         getSystemProperty_cb _hidl_cb){
   string val = phNxpNciHal_getSystemProperty(key);
@@ -106,7 +106,7 @@ Return<bool> NqNfc::setSystemProperty(const ::android::hardware::hidl_string& ke
 
 
 }  // namespace implementation
-}  // namespace V1_2
+}  // namespace V2_0
 }  // namespace nfc
 }  // namespace hardware
 }  // namespace nxp

@@ -27,11 +27,11 @@
  * IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef VENDOR_NXP_HARDWARE_NFC_V1_2_NQNFC_H
-#define VENDOR_NXP_HARDWARE_NFC_V1_2_NQNFC_H
+#ifndef VENDOR_NXP_HARDWARE_NFC_V2_0_NQNFC_H
+#define VENDOR_NXP_HARDWARE_NFC_V2_0_NQNFC_H
 
-#include <vendor/nxp/hardware/nfc/1.2/INqNfc.h>
-#include <vendor/nxp/hardware/nfc/1.2/types.h>
+#include <vendor/nxp/hardware/nfc/2.0/INqNfc.h>
+#include <vendor/nxp/hardware/nfc/2.0/types.h>
 #include <hidl/MQDescriptor.h>
 #include <hidl/Status.h>
 
@@ -39,15 +39,15 @@ namespace vendor {
 namespace nxp {
 namespace hardware {
 namespace nfc {
-namespace V1_2 {
+namespace V2_0 {
 namespace implementation {
 
 using ::android::hidl::base::V1_0::DebugInfo;
 using ::android::hidl::base::V1_0::IBase;
-using ::vendor::nxp::hardware::nfc::V1_2::INqNfc;
-using ::vendor::nxp::hardware::nfc::V1_2::nfc_nci_IoctlInOutData_t;
-using ::vendor::nxp::hardware::nfc::V1_2::nfc_nci_ExtnOutputData_t;
-using ::vendor::nxp::hardware::nfc::V1_2::NfcEvent2;
+using ::vendor::nxp::hardware::nfc::V2_0::INqNfc;
+using ::vendor::nxp::hardware::nfc::V2_0::nfc_nci_IoctlInOutData_t;
+using ::vendor::nxp::hardware::nfc::V2_0::nfc_nci_ExtnOutputData_t;
+using ::vendor::nxp::hardware::nfc::V2_0::NfcEvent2;
 using ::android::hardware::hidl_string;
 using ::android::hardware::hidl_vec;
 using ::android::hardware::Return;
@@ -62,7 +62,7 @@ struct NqNfc : public INqNfc {
     Return<void> getNfcChipId(getNfcChipId_cb _hidl_cb);
     Return<void> getNfcFirmwareVersion(getNfcFirmwareVersion_cb _hidl_cb);
 
-    // Methods from ::vendor::nxp::hardware::nfc::V1_2::INqNfc follow.
+    // Methods from ::vendor::nxp::hardware::nfc::V2_0::INqNfc follow.
     Return<void> getSystemProperty(const ::android::hardware::hidl_string& key,
           getSystemProperty_cb _hidl_cb) override;
     Return<bool> setSystemProperty(const ::android::hardware::hidl_string& key,
@@ -70,10 +70,10 @@ struct NqNfc : public INqNfc {
 };
 
 }  // namespace implementation
-}  // namespace V1_2
+}  // namespace V2_0
 }  // namespace nfc
 }  // namespace hardware
 }  // namespace nxp
 }  // namespace vendor
 
-#endif  // VENDOR_NXP_HARDWARE_NFC_V1_2_NQNFC_H
+#endif  // VENDOR_NXP_HARDWARE_NFC_V2_0_NQNFC_H

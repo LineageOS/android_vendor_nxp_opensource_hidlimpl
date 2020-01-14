@@ -27,7 +27,7 @@
  * IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#define LOG_TAG "vendor.nxp.hardware.nfc@1.3-service"
+#define LOG_TAG "vendor.nxp.hardware.nfc@2.0-service"
 
 #include <hidl/LegacySupport.h>
 #include "Nfc.h"
@@ -37,8 +37,8 @@ using android::hardware::nfc::V1_2::INfc;
 using android::hardware::nfc::V1_2::implementation::Nfc;
 using android::hardware::configureRpcThreadpool;
 using android::hardware::joinRpcThreadpool;
-using vendor::nxp::hardware::nfc::V1_2::INqNfc;
-using vendor::nxp::hardware::nfc::V1_2::implementation::NqNfc;
+using vendor::nxp::hardware::nfc::V2_0::INqNfc;
+using vendor::nxp::hardware::nfc::V2_0::implementation::NqNfc;
 using android::OK;
 using android::sp;
 using android::status_t;
