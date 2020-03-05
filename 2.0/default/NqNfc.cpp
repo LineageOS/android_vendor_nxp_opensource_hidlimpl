@@ -127,24 +127,24 @@ Return<bool> NqNfc::setSystemProperty(const ::android::hardware::hidl_string& ke
     return phNxpNciHal_setSystemProperty(key, value);
 }
 
-Return<void> NxpNfc::getVendorParam(const ::android::hardware::hidl_string &key,
+Return<void> NqNfc::getVendorParam(const ::android::hardware::hidl_string &key,
                           getVendorParam_cb _hidl_cb) {
     string val = phNxpNciHal_getSystemProperty(key);
     _hidl_cb(val);
     return Void();
 }
 
-Return<bool> NxpNfc::setVendorParam(const ::android::hardware::hidl_string &key,
+Return<bool> NqNfc::setVendorParam(const ::android::hardware::hidl_string &key,
                           const ::android::hardware::hidl_string &value) {
     return phNxpNciHal_setSystemProperty(key, value);
 }
 
-Return<bool> NxpNfc::resetEse(uint64_t resetType) {
+Return<bool> NqNfc::resetEse(uint64_t resetType) {
     NFCSTATUS status = NFCSTATUS_FAILED;
     bool ret = false;
 
-    ALOGD("NxpNfc::resetEse Entry");
-    if((uint64_t)Constants::HAL_NFC_ESE_HARD_RESET == resetType) {
+    ALOGD("NqNfc::resetEse Entry");
+    if((uint64_t)NxpConstants::HAL_NFC_ESE_HARD_RESET == resetType) {
         status = phNxpNciHal_resetEse();
         if(NFCSTATUS_SUCCESS == status) {
             ret = true;
@@ -156,15 +156,15 @@ Return<bool> NxpNfc::resetEse(uint64_t resetType) {
     } else {
         ALOGD("reset called with %lu type", resetType);
     }
-    ALOGD("NxpNfc::resetEse Exit");
+    ALOGD("NqNfc::resetEse Exit");
     return ret;
 }
 
-Return<bool> NxpNfc::setEseUpdateState(NxpNfcHalEseState eSEState) {
+Return<bool> NqNfc::setEseUpdateState(NxpNfcHalEseState eSEState) {
     int ret = -1;
     bool status = false;
 
-    ALOGD("NxpNfc::setEseUpdateState Entry");
+    ALOGD("NqNfc::setEseUpdateState Entry");
     ret = phNxpNciHal_nfcTriggerSavedCb((uint8_t)NxpNfcEvents::HAL_NFC_HCI_RESET);
     if(ret == 0) {
         status = true;
@@ -172,41 +172,41 @@ Return<bool> NxpNfc::setEseUpdateState(NxpNfcHalEseState eSEState) {
 
     if(eSEState == NxpNfcHalEseState::HAL_NFC_ESE_JCOP_UPDATE_COMPLETED
             || eSEState == NxpNfcHalEseState::HAL_NFC_ESE_LS_UPDATE_COMPLETED) {
-        ALOGD("NxpNfc::setEseUpdateState state == HAL_NFC_ESE_JCOP_UPDATE_COMPLETED");
+        ALOGD("NqNfc::setEseUpdateState state == HAL_NFC_ESE_JCOP_UPDATE_COMPLETED");
         seteSEClientState((uint8_t)eSEState);
         eSEClientUpdate_NFC_Thread();
     }
     if (eSEState == NxpNfcHalEseState::HAL_NFC_ESE_UPDATE_COMPLETED) {
         phNxpNciHal_nfcTriggerSavedCb((uint8_t)NxpNfcEvents::HAL_NFC_RESTART);
     }
-    ALOGD("NxpNfc::setEseUpdateState Exit");
+    ALOGD("NqNfc::setEseUpdateState Exit");
     return status;
 }
 
-Return<bool> NxpNfc::setNxpTransitConfig(const ::android::hardware::hidl_string &strval) {
+Return<bool> NqNfc::setNxpTransitConfig(const ::android::hardware::hidl_string &strval) {
     bool status = true;
 
-    ALOGD("NxpNfc::setNxpTransitConfig Entry");
+    ALOGD("NqNfc::setNxpTransitConfig Entry");
     status = phNxpNciHal_setNxpTransitConfig((char *)strval.c_str());
-    ALOGD("NxpNfc::setNxpTransitConfig Exit");
+    ALOGD("NqNfc::setNxpTransitConfig Exit");
     return status;
 }
 
-Return<bool> NxpNfc::isJcopUpdateRequired() {
+Return<bool> NqNfc::isJcopUpdateRequired() {
     bool status = 0;
 
-    ALOGD("NxpNfc::isJcopUpdateRequired Entry");
+    ALOGD("NqNfc::isJcopUpdateRequired Entry");
     status = getJcopUpdateRequired();
-    ALOGD("NxpNfc::isJcopUpdateRequired Exit");
+    ALOGD("NqNfc::isJcopUpdateRequired Exit");
     return status;
 }
 
-Return<bool> NxpNfc::isLsUpdateRequired() {
+Return<bool> NqNfc::isLsUpdateRequired() {
     bool status = 0;
 
-    ALOGD("NxpNfc::isLsUpdateRequired Entry");
+    ALOGD("NqNfc::isLsUpdateRequired Entry");
     status = getLsUpdateRequired();
-    ALOGD("NxpNfc::isLsUpdateRequired Exit");
+    ALOGD("NqNfc::isLsUpdateRequired Exit");
     return status;
 }
 

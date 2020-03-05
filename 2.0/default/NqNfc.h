@@ -55,7 +55,7 @@
 #include <hidl/MQDescriptor.h>
 #include <hidl/Status.h>
 
-enum Constants : uint16_t {
+enum NxpConstants : uint16_t {
     HAL_NFC_ESE_HARD_RESET = 5,
 };
 
@@ -77,6 +77,7 @@ using ::vendor::nxp::hardware::nfc::V2_0::INqNfc;
 using ::vendor::nxp::hardware::nfc::V2_0::nfc_nci_IoctlInOutData_t;
 using ::vendor::nxp::hardware::nfc::V2_0::nfc_nci_ExtnOutputData_t;
 using ::vendor::nxp::hardware::nfc::V2_0::NfcEvent2;
+using ::vendor::nxp::hardware::nfc::V2_0::NxpNfcHalEseState;
 using ::android::hardware::hidl_string;
 using ::android::hardware::hidl_vec;
 using ::android::hardware::Return;
