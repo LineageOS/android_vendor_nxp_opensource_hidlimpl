@@ -12,7 +12,6 @@ cc_binary {
     shared_libs: [
         "nfc_nci.nqx.default.hw",
         "libhidlbase",
-        "libhidltransport",
         "libutils",
         "liblog",
         "android.hardware.nfc@1.0",

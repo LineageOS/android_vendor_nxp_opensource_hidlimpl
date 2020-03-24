@@ -9,7 +9,6 @@ cc_library_shared {
         "liblog",
         "libhardware",
         "libhidlbase",
-        "libhidltransport",
         "libutils",
         "vendor.nxp.hardware.nfc@1.0",
     ],
