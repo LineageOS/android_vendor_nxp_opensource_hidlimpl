@@ -55,7 +55,7 @@
 #include <hidl/MQDescriptor.h>
 #include <hidl/Status.h>
 
-enum NxpConstants : uint16_t {
+enum Constants : uint16_t {
     HAL_NFC_ESE_HARD_RESET = 5,
 };
 
@@ -74,9 +74,6 @@ namespace implementation {
 using ::android::hidl::base::V1_0::DebugInfo;
 using ::android::hidl::base::V1_0::IBase;
 using ::vendor::nxp::hardware::nfc::V2_0::INqNfc;
-using ::vendor::nxp::hardware::nfc::V2_0::nfc_nci_IoctlInOutData_t;
-using ::vendor::nxp::hardware::nfc::V2_0::nfc_nci_ExtnOutputData_t;
-using ::vendor::nxp::hardware::nfc::V2_0::NfcEvent2;
 using ::vendor::nxp::hardware::nfc::V2_0::NxpNfcHalEseState;
 using ::android::hardware::hidl_string;
 using ::android::hardware::hidl_vec;
@@ -93,10 +90,6 @@ struct NqNfc : public INqNfc {
     Return<void> getNfcFirmwareVersion(getNfcFirmwareVersion_cb _hidl_cb);
 
     // Methods from ::vendor::nxp::hardware::nfc::V2_0::INqNfc follow.
-    Return<void> getSystemProperty(const ::android::hardware::hidl_string& key,
-          getSystemProperty_cb _hidl_cb) override;
-    Return<bool> setSystemProperty(const ::android::hardware::hidl_string& key,
-          const ::android::hardware::hidl_string& value)  override;
     Return<void> getVendorParam(const ::android::hardware::hidl_string &key,
           getVendorParam_cb _hidl_cb) override;
     Return<bool> setVendorParam(const ::android::hardware::hidl_string &key,

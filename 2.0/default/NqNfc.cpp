@@ -64,40 +64,8 @@ namespace V2_0 {
 namespace implementation {
 
 // Methods from ::vendor::nxp::hardware::nfc::V1_0::INqNfc follow.
-Return<void> NqNfc::ioctl(uint64_t ioctlType, const hidl_vec<uint8_t>& inputData, ioctl_cb _hidl_cb) {
-    uint32_t status;
-    nfc_nci_IoctlInOutData_t inpOutData;
-    V1_0::NfcData  outputData;
-
-    nfc_nci_IoctlInOutData_t *pInOutData = (nfc_nci_IoctlInOutData_t*)&inputData[0];
-
-    /*
-     * data from proxy->stub is copied to local data which can be updated by
-     * underlying HAL implementation since its an inout argument
-     */
-    memcpy(&inpOutData, pInOutData, sizeof(nfc_nci_IoctlInOutData_t));
-    if (ioctlType == (long)NfcEvent2::HAL_NFC_IOCTL_SET_TRANSIT_CONFIG) {
-      /*
-       * As transit configurations are appended at the end of
-       * nfc_nci_IoctlInOutData_t, Assign appropriate pointer to TransitConfig
-       */
-      if (inpOutData.inp.data.transitConfig().len == 0) {
-        inpOutData.inp.data.transitConfig().val = NULL;
-      } else {
-        memcpy(&(inpOutData.inp.data.transitConfig().val), (pInOutData + sizeof(nfc_nci_IoctlInOutData_t)),
-               inpOutData.inp.data.transitConfig().len);
-      }
-    }
-    status = phNxpNciHal_ioctl(ioctlType, &inpOutData);
-
-    /*
-     * copy data and additional fields indicating status of ioctl operation
-     * and context of the caller. Then invoke the corresponding proxy callback
-     */
-    inpOutData.out.ioctlType = ioctlType;
-    inpOutData.out.result = status;
-    outputData.setToExternal((uint8_t*)&inpOutData.out, sizeof(nfc_nci_ExtnOutputData_t));
-    _hidl_cb(outputData);
+Return<void> NqNfc::ioctl(uint64_t /* ioctlType */, const hidl_vec<uint8_t>& /* inputData */, ioctl_cb /* _hidl_cb */) {
+    // Deprecated
     return Void();
 }
 
@@ -112,19 +80,6 @@ Return<void> NqNfc::getNfcFirmwareVersion(getNfcFirmwareVersion_cb _hidl_cb) {
     std::string value = phNxpNciHal_getNfcFirmwareVersion();
     _hidl_cb(value);
     return Void();
-}
-
-// Methods from ::vendor::nxp::hardware::nfc::V2_0::INqNfc follow.
-Return<void> NqNfc::getSystemProperty(const ::android::hardware::hidl_string& key,
-        getSystemProperty_cb _hidl_cb){
-    string val = phNxpNciHal_getSystemProperty(key);
-    _hidl_cb(val);
-    return Void();
-}
-
-Return<bool> NqNfc::setSystemProperty(const ::android::hardware::hidl_string& key,
-        const ::android::hardware::hidl_string& value){
-    return phNxpNciHal_setSystemProperty(key, value);
 }
 
 Return<void> NqNfc::getVendorParam(const ::android::hardware::hidl_string &key,
@@ -144,7 +99,7 @@ Return<bool> NqNfc::resetEse(uint64_t resetType) {
     bool ret = false;
 
     ALOGD("NqNfc::resetEse Entry");
-    if((uint64_t)NxpConstants::HAL_NFC_ESE_HARD_RESET == resetType) {
+    if((uint64_t)Constants::HAL_NFC_ESE_HARD_RESET == resetType) {
         status = phNxpNciHal_resetEse();
         if(NFCSTATUS_SUCCESS == status) {
             ret = true;
