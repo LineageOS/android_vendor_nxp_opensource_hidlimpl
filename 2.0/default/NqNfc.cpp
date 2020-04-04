@@ -27,9 +27,32 @@
  * IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/*
+ * Not a contribution.
+ */
+
+/*
+ *  Copyright 2018-2020 NXP
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+
 #include <hardware/hardware.h>
 #include <log/log.h>
 #include "NqNfc.h"
+#include "eSEClientExtns.h"
+#include "eSEClientIntf.h"
+#include "phNxpNciHal.h"
 #include "phNxpNciHal_Adaptation.h"
 #include "phNxpNciHal_IoctlOperations.h"
 
@@ -41,40 +64,8 @@ namespace V2_0 {
 namespace implementation {
 
 // Methods from ::vendor::nxp::hardware::nfc::V1_0::INqNfc follow.
-Return<void> NqNfc::ioctl(uint64_t ioctlType, const hidl_vec<uint8_t>& inputData, ioctl_cb _hidl_cb) {
-    uint32_t status;
-    nfc_nci_IoctlInOutData_t inpOutData;
-    V1_0::NfcData  outputData;
-
-    nfc_nci_IoctlInOutData_t *pInOutData = (nfc_nci_IoctlInOutData_t*)&inputData[0];
-
-    /*
-     * data from proxy->stub is copied to local data which can be updated by
-     * underlying HAL implementation since its an inout argument
-     */
-    memcpy(&inpOutData, pInOutData, sizeof(nfc_nci_IoctlInOutData_t));
-    if (ioctlType == (long)NfcEvent2::HAL_NFC_IOCTL_SET_TRANSIT_CONFIG) {
-      /*
-       * As transit configurations are appended at the end of
-       * nfc_nci_IoctlInOutData_t, Assign appropriate pointer to TransitConfig
-       */
-      if (inpOutData.inp.data.transitConfig().len == 0) {
-        inpOutData.inp.data.transitConfig().val = NULL;
-      } else {
-        memcpy(&(inpOutData.inp.data.transitConfig().val), (pInOutData + sizeof(nfc_nci_IoctlInOutData_t)),
-               inpOutData.inp.data.transitConfig().len);
-      }
-    }
-    status = phNxpNciHal_ioctl(ioctlType, &inpOutData);
-
-    /*
-     * copy data and additional fields indicating status of ioctl operation
-     * and context of the caller. Then invoke the corresponding proxy callback
-     */
-    inpOutData.out.ioctlType = ioctlType;
-    inpOutData.out.result = status;
-    outputData.setToExternal((uint8_t*)&inpOutData.out, sizeof(nfc_nci_ExtnOutputData_t));
-    _hidl_cb(outputData);
+Return<void> NqNfc::ioctl(uint64_t /* ioctlType */, const hidl_vec<uint8_t>& /* inputData */, ioctl_cb /* _hidl_cb */) {
+    // Deprecated
     return Void();
 }
 
@@ -91,19 +82,88 @@ Return<void> NqNfc::getNfcFirmwareVersion(getNfcFirmwareVersion_cb _hidl_cb) {
     return Void();
 }
 
-// Methods from ::vendor::nxp::hardware::nfc::V2_0::INqNfc follow.
-Return<void> NqNfc::getSystemProperty(const ::android::hardware::hidl_string& key,
-        getSystemProperty_cb _hidl_cb){
-  string val = phNxpNciHal_getSystemProperty(key);
-  _hidl_cb(val);
-  return Void();
+Return<void> NqNfc::getVendorParam(const ::android::hardware::hidl_string &key,
+                          getVendorParam_cb _hidl_cb) {
+    string val = phNxpNciHal_getSystemProperty(key);
+    _hidl_cb(val);
+    return Void();
 }
 
-Return<bool> NqNfc::setSystemProperty(const ::android::hardware::hidl_string& key,
-        const ::android::hardware::hidl_string& value){
-  return phNxpNciHal_setSystemProperty(key, value);
+Return<bool> NqNfc::setVendorParam(const ::android::hardware::hidl_string &key,
+                          const ::android::hardware::hidl_string &value) {
+    return phNxpNciHal_setSystemProperty(key, value);
 }
 
+Return<bool> NqNfc::resetEse(uint64_t resetType) {
+    NFCSTATUS status = NFCSTATUS_FAILED;
+    bool ret = false;
+
+    ALOGD("NqNfc::resetEse Entry");
+    if((uint64_t)Constants::HAL_NFC_ESE_HARD_RESET == resetType) {
+        status = phNxpNciHal_resetEse();
+        if(NFCSTATUS_SUCCESS == status) {
+            ret = true;
+            status = NFCSTATUS_SUCCESS;
+            ALOGD("HAL_NFC_ESE_HARD_RESET completed");
+        } else {
+            ALOGD("HAL_NFC_ESE_HARD_RESET failed");
+        }
+    } else {
+        ALOGD("reset called with %lu type", resetType);
+    }
+    ALOGD("NqNfc::resetEse Exit");
+    return ret;
+}
+
+Return<bool> NqNfc::setEseUpdateState(NxpNfcHalEseState eSEState) {
+    int ret = -1;
+    bool status = false;
+
+    ALOGD("NqNfc::setEseUpdateState Entry");
+    ret = phNxpNciHal_nfcTriggerSavedCb((uint8_t)NxpNfcEvents::HAL_NFC_HCI_RESET);
+    if(ret == 0) {
+        status = true;
+    }
+
+    if(eSEState == NxpNfcHalEseState::HAL_NFC_ESE_JCOP_UPDATE_COMPLETED
+            || eSEState == NxpNfcHalEseState::HAL_NFC_ESE_LS_UPDATE_COMPLETED) {
+        ALOGD("NqNfc::setEseUpdateState state == HAL_NFC_ESE_JCOP_UPDATE_COMPLETED");
+        seteSEClientState((uint8_t)eSEState);
+        eSEClientUpdate_NFC_Thread();
+    }
+    if (eSEState == NxpNfcHalEseState::HAL_NFC_ESE_UPDATE_COMPLETED) {
+        phNxpNciHal_nfcTriggerSavedCb((uint8_t)NxpNfcEvents::HAL_NFC_RESTART);
+    }
+    ALOGD("NqNfc::setEseUpdateState Exit");
+    return status;
+}
+
+Return<bool> NqNfc::setNxpTransitConfig(const ::android::hardware::hidl_string &strval) {
+    bool status = true;
+
+    ALOGD("NqNfc::setNxpTransitConfig Entry");
+    status = phNxpNciHal_setNxpTransitConfig((char *)strval.c_str());
+    ALOGD("NqNfc::setNxpTransitConfig Exit");
+    return status;
+}
+
+Return<bool> NqNfc::isJcopUpdateRequired() {
+    bool status = 0;
+
+    ALOGD("NqNfc::isJcopUpdateRequired Entry");
+    status = getJcopUpdateRequired();
+    ALOGD("NqNfc::isJcopUpdateRequired Exit");
+    return status;
+}
+
+Return<bool> NqNfc::isLsUpdateRequired() {
+    bool status = 0;
+
+    ALOGD("NqNfc::isLsUpdateRequired Entry");
+    status = getLsUpdateRequired();
+    ALOGD("NqNfc::isLsUpdateRequired Exit");
+    return status;
+}
 
 }  // namespace implementation
 }  // namespace V2_0
