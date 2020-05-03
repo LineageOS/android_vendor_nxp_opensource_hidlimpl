@@ -51,7 +51,6 @@
 #define VENDOR_NXP_HARDWARE_NFC_V2_0_NQNFC_H
 
 #include <vendor/nxp/hardware/nfc/2.0/INqNfc.h>
-#include <vendor/nxp/hardware/nfc/2.0/types.h>
 #include <hidl/MQDescriptor.h>
 #include <hidl/Status.h>
 
@@ -59,10 +58,6 @@ enum Constants : uint16_t {
     HAL_NFC_ESE_HARD_RESET = 5,
 };
 
-enum NxpNfcEvents : uint8_t {
-    HAL_NFC_RESTART = 0x30,
-    HAL_NFC_HCI_RESET = 0x40,
-};
 
 namespace vendor {
 namespace nxp {
@@ -71,15 +66,11 @@ namespace nfc {
 namespace V2_0 {
 namespace implementation {
 
-using ::android::hidl::base::V1_0::DebugInfo;
 using ::android::hidl::base::V1_0::IBase;
 using ::vendor::nxp::hardware::nfc::V2_0::INqNfc;
-using ::vendor::nxp::hardware::nfc::V2_0::NxpNfcHalEseState;
-using ::android::hardware::hidl_string;
 using ::android::hardware::hidl_vec;
 using ::android::hardware::Return;
 using ::android::hardware::Void;
-using ::android::sp;
 
 struct NqNfc : public INqNfc {
     // Methods from ::vendor::nxp::hardware::nfc::V2_0::INqNfc follow.
