@@ -32,6 +32,7 @@
 #include <hidl/LegacySupport.h>
 #include "Nfc.h"
 #include "NqNfc.h"
+#include "NxpNfcLegacy.h"
 
 using android::hardware::nfc::V1_2::INfc;
 using android::hardware::nfc::V1_2::implementation::Nfc;
@@ -39,6 +40,8 @@ using android::hardware::configureRpcThreadpool;
 using android::hardware::joinRpcThreadpool;
 using vendor::nxp::hardware::nfc::V2_0::INqNfc;
 using vendor::nxp::hardware::nfc::V2_0::implementation::NqNfc;
+using vendor::nxp::nxpnfclegacy::V1_0::INxpNfcLegacy;
+using vendor::nxp::nxpnfclegacy::V1_0::implementation::NxpNfcLegacy;
 using android::OK;
 using android::sp;
 using android::status_t;
@@ -54,6 +57,10 @@ int main() {
     sp<INqNfc> nq_nfc_service = new NqNfc();
     status = nq_nfc_service->registerAsService();
     ALOGE_IF(status != OK, "Error while registering nqnfc vendor service: %d", status);
+
+    sp<INxpNfcLegacy> nxp_nfc_legacy_service = new NxpNfcLegacy();
+    status = nxp_nfc_legacy_service->registerAsService();
+    ALOGE_IF(status != OK, "Error while registering NxpNfcLegacy vendor service: %d", status);
 
     joinRpcThreadpool();
     return status;

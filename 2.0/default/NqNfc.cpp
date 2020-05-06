@@ -85,12 +85,12 @@ Return<bool> NqNfc::setVendorParam(const ::android::hardware::hidl_string &key,
     return phNxpNciHal_setSystemProperty(key, value);
 }
 
-Return<bool> NqNfc::resetEse(uint64_t resetType) {
+Return<bool> NqNfc::resetEse(uint64_t /* resetType */) {
     NFCSTATUS status = NFCSTATUS_FAILED;
     bool ret = false;
 
     ALOGD("NqNfc::resetEse Entry");
-    status = phNxpNciHal_resetEse(resetType);
+    status = phNxpNciHal_resetEse();
     if(NFCSTATUS_SUCCESS == status) {
         ret = true;
         status = NFCSTATUS_SUCCESS;
