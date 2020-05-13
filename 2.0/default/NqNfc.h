@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017-2019, The Linux Foundation. All rights reserved.
+ * Copyright (c) 2017-2020, The Linux Foundation. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -82,14 +82,9 @@ using ::android::hardware::Void;
 using ::android::sp;
 
 struct NqNfc : public INqNfc {
-    // Methods from ::vendor::nxp::hardware::nfc::V1_0::INqNfc follow.
-    Return<void> ioctl(uint64_t ioctlType, const hidl_vec<uint8_t>& inputData, ioctl_cb _hidl_cb) override;
-
-    // Methods from ::vendor::nxp::hardware::nfc::V1_1::INqNfc follow.
+    // Methods from ::vendor::nxp::hardware::nfc::V2_0::INqNfc follow.
     Return<void> getNfcChipId(getNfcChipId_cb _hidl_cb);
     Return<void> getNfcFirmwareVersion(getNfcFirmwareVersion_cb _hidl_cb);
-
-    // Methods from ::vendor::nxp::hardware::nfc::V2_0::INqNfc follow.
     Return<void> getVendorParam(const ::android::hardware::hidl_string &key,
           getVendorParam_cb _hidl_cb) override;
     Return<bool> setVendorParam(const ::android::hardware::hidl_string &key,
