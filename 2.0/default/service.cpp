@@ -27,10 +27,7 @@
  * IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#define LOG_TAG "vendor.nxp.hardware.nfc@1.2-service"
-
-#include <android/hardware/nfc/1.1/INfc.h>
-#include <vendor/nxp/hardware/nfc/1.1/INqNfc.h>
+#define LOG_TAG "vendor.nxp.hardware.nfc@2.0-service"
 
 #include <hidl/LegacySupport.h>
 #include "Nfc.h"
@@ -40,8 +37,8 @@ using android::hardware::nfc::V1_2::INfc;
 using android::hardware::nfc::V1_2::implementation::Nfc;
 using android::hardware::configureRpcThreadpool;
 using android::hardware::joinRpcThreadpool;
-using vendor::nxp::hardware::nfc::V1_1::INqNfc;
-using vendor::nxp::hardware::nfc::V1_1::implementation::NqNfc;
+using vendor::nxp::hardware::nfc::V2_0::INqNfc;
+using vendor::nxp::hardware::nfc::V2_0::implementation::NqNfc;
 using android::OK;
 using android::sp;
 using android::status_t;
@@ -56,7 +53,7 @@ int main() {
 
     sp<INqNfc> nq_nfc_service = new NqNfc();
     status = nq_nfc_service->registerAsService();
-    LOG_ALWAYS_FATAL_IF(status != OK, "Error while registering nqnfc vendor service: %d", status);
+    ALOGE_IF(status != OK, "Error while registering nqnfc vendor service: %d", status);
 
     joinRpcThreadpool();
     return status;
