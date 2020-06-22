@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017, The Linux Foundation. All rights reserved.
+ * Copyright (c) 2018, The Linux Foundation. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -27,28 +27,43 @@
  * IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#define LOG_TAG "vendor.nxp.hardware.nfc@1.0-service"
+#ifndef ANDROID_HARDWARE_NFC_V1_1_NFCCLIENTCALLBACK_H
+#define ANDROID_HARDWARE_NFC_V1_1_NFCCLIENTCALLBACK_H
 
-#include <android/hardware/nfc/1.0/INfc.h>
-#include <vendor/nxp/hardware/nfc/1.0/INqNfc.h>
-#include <hwbinder/ProcessState.h>
-#include <hidl/LegacySupport.h>
+#include <android/hardware/nfc/1.1/INfcClientCallback.h>
+#include <hidl/MQDescriptor.h>
+#include <hidl/Status.h>
 
-using android::hardware::configureRpcThreadpool;
-using android::hardware::joinRpcThreadpool;
-using android::hardware::nfc::V1_0::INfc;
-using vendor::nxp::hardware::nfc::V1_0::INqNfc;
-using android::hardware::registerPassthroughServiceImplementation;
-using android::OK;
+namespace android {
+namespace hardware {
+namespace nfc {
+namespace V1_1 {
+namespace implementation {
 
-int main() {
-    android::hardware::ProcessState::initWithMmapSize((size_t)(8192));
-    configureRpcThreadpool(1, true /*callerWillJoin*/);
-    android::status_t status;
-    status = registerPassthroughServiceImplementation<INfc>();
-    LOG_ALWAYS_FATAL_IF(status != OK, "Error while registering nfc AOSP service: %d", status);
-    status = registerPassthroughServiceImplementation<INqNfc>();
-    LOG_ALWAYS_FATAL_IF(status != OK, "Error while registering nqnfc vendor service: %d", status);
-    joinRpcThreadpool();
-    return status;
-}
+using ::android::hardware::hidl_array;
+using ::android::hardware::hidl_memory;
+using ::android::hardware::hidl_string;
+using ::android::hardware::hidl_vec;
+using ::android::hardware::Return;
+using ::android::hardware::Void;
+using ::android::sp;
+
+struct NfcClientCallback : public INfcClientCallback {
+    // Methods from ::android::hardware::nfc::V1_0::INfcClientCallback follow.
+    Return<void> sendEvent(::android::hardware::nfc::V1_0::NfcEvent event, ::android::hardware::nfc::V1_0::NfcStatus status) override;
+    Return<void> sendData(const hidl_vec<uint8_t>& data) override;
+
+    // Methods from ::android::hardware::nfc::V1_1::INfcClientCallback follow.
+    Return<void> sendEvent_1_1(::android::hardware::nfc::V1_1::NfcEvent event, ::android::hardware::nfc::V1_0::NfcStatus status) override;
+
+    // Methods from ::android::hidl::base::V1_0::IBase follow.
+
+};
+
+}  // namespace implementation
+}  // namespace V1_1
+}  // namespace nfc
+}  // namespace hardware
+}  // namespace android
+
+#endif  // ANDROID_HARDWARE_NFC_V1_1_NFCCLIENTCALLBACK_H

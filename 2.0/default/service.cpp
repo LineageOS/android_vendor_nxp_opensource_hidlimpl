@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017, The Linux Foundation. All rights reserved.
+ * Copyright (c) 2018-2019, The Linux Foundation. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -27,16 +27,41 @@
  * IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef VENDOR_NXP_NQNFC_V1_0_DEVICE_H
-#define VENDOR_NXP_NQNFC_V1_0_DEVICE_H
+#define LOG_TAG "vendor.nxp.hardware.nfc@2.0-service"
 
-typedef struct {
-    struct nfc_nci_device nci_device;
+#include <hidl/LegacySupport.h>
+#include "Nfc.h"
+#include "NqNfc.h"
+#include "NxpNfcLegacy.h"
 
-    /* Local definitions */
-    int(*ioctl)(const struct nfc_nci_device *p_dev, long arg, void *p_data);
-    int(*check_fw_dwnld_flag)(const struct nfc_nci_device *p_dev, uint8_t* param1);
+using android::hardware::nfc::V1_2::INfc;
+using android::hardware::nfc::V1_2::implementation::Nfc;
+using android::hardware::configureRpcThreadpool;
+using android::hardware::joinRpcThreadpool;
+using vendor::nxp::hardware::nfc::V2_0::INqNfc;
+using vendor::nxp::hardware::nfc::V2_0::implementation::NqNfc;
+using vendor::nxp::nxpnfclegacy::V1_0::INxpNfcLegacy;
+using vendor::nxp::nxpnfclegacy::V1_0::implementation::NxpNfcLegacy;
+using android::OK;
+using android::sp;
+using android::status_t;
 
-} pn547_dev_t;
+int main() {
+    configureRpcThreadpool(1, true /*callerWillJoin*/);
+    status_t status;
 
-#endif // VENDOR_NXP_NQNFC_V1_0_DEVICE_H
+    sp<INfc> nfc_service = new Nfc();
+    status = nfc_service->registerAsService();
+    LOG_ALWAYS_FATAL_IF(status != OK, "Error while registering nfc AOSP service: %d", status);
+
+    sp<INqNfc> nq_nfc_service = new NqNfc();
+    status = nq_nfc_service->registerAsService();
+    ALOGE_IF(status != OK, "Error while registering nqnfc vendor service: %d", status);
+
+    sp<INxpNfcLegacy> nxp_nfc_legacy_service = new NxpNfcLegacy();
+    status = nxp_nfc_legacy_service->registerAsService();
+    ALOGE_IF(status != OK, "Error while registering NxpNfcLegacy vendor service: %d", status);
+
+    joinRpcThreadpool();
+    return status;
+}

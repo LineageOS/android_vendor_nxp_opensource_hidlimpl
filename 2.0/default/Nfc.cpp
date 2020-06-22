@@ -17,6 +17,7 @@
  ******************************************************************************/
 /*
  * Copyright (c) 2018, The Linux Foundation. All rights reserved.
+ * Not a contribution.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -44,8 +45,7 @@
  * IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
-#define LOG_TAG "android.hardware.nfc@1.1-impl"
+#define LOG_TAG "android.hardware.nfc@1.2-impl"
 #include <log/log.h>
 #include "Nfc.h"
 #include "phNxpNciHal_Adaptation.h"
@@ -59,7 +59,7 @@ extern bool nfc_debug_enabled;
 namespace android {
 namespace hardware {
 namespace nfc {
-namespace V1_1 {
+namespace V1_2 {
 namespace implementation {
 
 sp<V1_1::INfcClientCallback> Nfc::mCallbackV1_1 = nullptr;
@@ -67,9 +67,8 @@ sp<V1_0::INfcClientCallback> Nfc::mCallbackV1_0 = nullptr;
 
 Return<V1_0::NfcStatus> Nfc::open_1_1(
     const sp<V1_1::INfcClientCallback>& clientCallback) {
-  ALOGD_IF(nfc_debug_enabled, "Nfc::open_1_1(): enter");
   if (clientCallback == nullptr) {
-    ALOGD_IF(nfc_debug_enabled, "Nfc::open(): null callback");
+    ALOGD_IF(nfc_debug_enabled, "Nfc::open null callback");
     return V1_0::NfcStatus::FAILED;
   } else {
     mCallbackV1_1 = clientCallback;
@@ -81,9 +80,9 @@ Return<V1_0::NfcStatus> Nfc::open_1_1(
 // Methods from ::android::hardware::nfc::V1_0::INfc follow.
 Return<V1_0::NfcStatus> Nfc::open(
     const sp<V1_0::INfcClientCallback>& clientCallback) {
-  ALOGD_IF(nfc_debug_enabled, "Nfc::open(): enter");
+  ALOGD_IF(nfc_debug_enabled, "Nfc::open Enter");
   if (clientCallback == nullptr) {
-    ALOGD_IF(nfc_debug_enabled, "Nfc::open(): null callback");
+    ALOGD_IF(nfc_debug_enabled, "Nfc::open null callback");
     return V1_0::NfcStatus::FAILED;
   } else {
     mCallbackV1_0 = clientCallback;
@@ -91,7 +90,7 @@ Return<V1_0::NfcStatus> Nfc::open(
   }
 
   NFCSTATUS status = phNxpNciHal_open(eventCallback, dataCallback);
-  ALOGD_IF(nfc_debug_enabled, "Nfc::open(): exit");
+  ALOGD_IF(nfc_debug_enabled, "Nfc::open Exit");
   return CHK_STATUS(status);
 }
 
@@ -140,7 +139,7 @@ Return<V1_0::NfcStatus> Nfc::powerCycle() {
 
 // Methods from ::android::hardware::nfc::V1_1::INfc follow.
 Return<void> Nfc::factoryReset() {
-  phNxpNciHal_reset_nfcee_session(false);
+  phNxpNciHal_do_factory_reset();
   return Void();
 }
 
@@ -162,8 +161,14 @@ Return<V1_0::NfcStatus> Nfc::closeForPowerOffCase() {
 }
 
 Return<void> Nfc::getConfig(getConfig_cb hidl_cb) {
-  NfcConfig nfcVendorConfig;
+  android::hardware::nfc::V1_1::NfcConfig nfcVendorConfig;
   phNxpNciHal_getVendorConfig(nfcVendorConfig);
+  hidl_cb(nfcVendorConfig);
+  return Void();
+}
+Return<void> Nfc::getConfig_1_2(getConfig_1_2_cb hidl_cb) {
+  NfcConfig nfcVendorConfig;
+  phNxpNciHal_getVendorConfig_1_2(nfcVendorConfig);
   hidl_cb(nfcVendorConfig);
   return Void();
 }

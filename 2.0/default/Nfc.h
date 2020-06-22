@@ -17,6 +17,7 @@
  ******************************************************************************/
 /*
  * Copyright (c) 2018, The Linux Foundation. All rights reserved.
+ * Not a contribution.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -44,11 +45,11 @@
  * IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef ANDROID_HARDWARE_NFC_V1_1_NFC_H
-#define ANDROID_HARDWARE_NFC_V1_1_NFC_H
+#ifndef ANDROID_HARDWARE_NFC_V1_2_NFC_H
+#define ANDROID_HARDWARE_NFC_V1_2_NFC_H
 
-#include <android/hardware/nfc/1.1/INfc.h>
-#include <android/hardware/nfc/1.1/types.h>
+#include <android/hardware/nfc/1.2/INfc.h>
+#include <android/hardware/nfc/1.2/types.h>
 #include <hidl/MQDescriptor.h>
 #include <hidl/Status.h>
 #include <log/log.h>
@@ -56,11 +57,11 @@
 namespace android {
 namespace hardware {
 namespace nfc {
-namespace V1_1 {
+namespace V1_2 {
 namespace implementation {
 
 using ::android::hidl::base::V1_0::IBase;
-using ::android::hardware::nfc::V1_1::INfc;
+using ::android::hardware::nfc::V1_2::INfc;
 using ::android::hardware::hidl_array;
 using ::android::hardware::hidl_memory;
 using ::android::hardware::hidl_string;
@@ -68,7 +69,7 @@ using ::android::hardware::hidl_vec;
 using ::android::hardware::Return;
 using ::android::hardware::Void;
 using ::android::sp;
-struct Nfc : public V1_1::INfc, public hidl_death_recipient {
+struct Nfc : public V1_2::INfc, public hidl_death_recipient {
  public:
   // Methods from ::android::hardware::nfc::V1_0::INfc follow.
   Return<V1_0::NfcStatus> open(
@@ -87,6 +88,7 @@ struct Nfc : public V1_1::INfc, public hidl_death_recipient {
   Return<void> factoryReset();
   Return<V1_0::NfcStatus> closeForPowerOffCase();
   Return<void> getConfig(getConfig_cb config);
+  Return<void> getConfig_1_2(getConfig_1_2_cb config);
 
   // Methods from ::android::hidl::base::V1_0::IBase follow.
 
@@ -95,13 +97,13 @@ struct Nfc : public V1_1::INfc, public hidl_death_recipient {
       auto ret = mCallbackV1_1->sendEvent_1_1((V1_1::NfcEvent)event,
                                               (V1_0::NfcStatus)status);
       if (!ret.isOk()) {
-        ALOGW("failed to send event!!!");
+        ALOGW("failed to send event for mCallbackV1_1!!!");
       }
     } else if (mCallbackV1_0 != nullptr) {
       auto ret = mCallbackV1_0->sendEvent((V1_0::NfcEvent)event,
                                           (V1_0::NfcStatus)status);
       if (!ret.isOk()) {
-        ALOGE("failed to send event!!!");
+        ALOGE("failed to send event for mCallbackV1_0!!!");
       }
     }
   }
@@ -112,12 +114,12 @@ struct Nfc : public V1_1::INfc, public hidl_death_recipient {
     if (mCallbackV1_1 != nullptr) {
       auto ret = mCallbackV1_1->sendData(data);
       if (!ret.isOk()) {
-        ALOGW("failed to send data!!!");
+        ALOGW("failed to send data for mCallbackV1_1!!!");
       }
     } else if (mCallbackV1_0 != nullptr) {
       auto ret = mCallbackV1_0->sendData(data);
       if (!ret.isOk()) {
-        ALOGE("failed to send data!!!");
+        ALOGE("failed to send data for mCallbackV1_0!!!");
       }
     }
   }
