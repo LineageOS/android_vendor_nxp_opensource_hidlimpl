@@ -2,6 +2,7 @@ cc_binary {
     name: "vendor.nxp.hardware.nfc@2.0-service",
     defaults: ["hidl_defaults"],
     init_rc: ["vendor.nxp.hardware.nfc@2.0-service.rc"],
+    vintf_fragments: ["vendor.nxp.hardware.nfc@2.0-service.xml"],
     relative_install_path: "hw",
     vendor: true,
     srcs: [
