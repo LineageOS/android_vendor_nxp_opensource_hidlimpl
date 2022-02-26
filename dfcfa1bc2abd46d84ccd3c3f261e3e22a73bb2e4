@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "668f920b_8974d240",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 28232
+      },
+      "writtenOn": "2022-02-26T13:50:02Z",
+      "side": 1,
+      "message": "Hey, Could you please consider this?\n\nI was actually trying to update tree with R blobs and encountered this issue. Stock has removed the manifest entry in favor of VINTF.\n\nSince we did not update tags for this project we might have missed this commit.",
+      "revId": "dfcfa1bc2abd46d84ccd3c3f261e3e22a73bb2e4",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
